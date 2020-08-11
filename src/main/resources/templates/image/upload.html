@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+    <script type="text/javascript" language="JavaScript" src="/js/jquery-1.6.2.min.js"></script>
+</head>
+<body>
+<div style="width:100%;height:20px;background:#ffffff;font-size: 16px;" ></div>
+<div id="content" style="width:800px;">
+
+    <div style="width:800px;float:left;">
+       <!--====================main begin=====================-->
+
+        <div style="width:260px;height:200px;float:left;background: #eeeeee;padding-left: 10px;padding-top: 10px;">
+            单文件上传<br/>
+            说明：不能多选<br/>
+            <input id="fileone" type="file" name="fileone" /><br/><br/>
+            <input type="button" name="go" value="单文件上传" onclick="go_single_add()" />
+        </div>
+
+        <div style="width:380px;height:200px;float:left;margin-left:20px;background: #eeeeee;padding-left: 10px;padding-top: 10px;">
+            多文件上传<br/>
+            说明：可以多选<br/>
+            <input id="files" type="file" name="files" multiple /><br/><br/>
+            <input type="button" name="go" value="多文件上传" onclick="go_multi_add()" />
+        </div>
+
+        <!--====================main   end=====================-->
+    </div>
+</div>
+
+
+<script>
+    //单文件上传
+    function go_single_add(){
+        //把表单中选中的文件添加到postdata
+        var postdata=new FormData();
+        if ($("#fileone")[0]==null || $("#fileone")[0].files.length<1){
+            alert("未选中图片")
+            return false
+        }
+        for (var i=0;i<$("#fileone")[0].files.length;i++){
+            postdata.append("files",$("#fileone")[0].files[i])
+        }
+
+        $.ajax({
+            type:"POST",
+            url:"/file/uploaded",
+            data:postdata,
+            //返回数据的格式
+            datatype: "json",//"xml", "html", "script", "json", "jsonp", "text".
+            processData: false,
+            contentType: false,
+            //成功返回之后调用的函数
+            success:function(data){
+                if (data.code == 0) {
+                    alert('上传成功:'+data.msg);
+                    //window.location.href="/image/imagelist";
+                } else {
+                    alert("上传失败:"+data.msg);
+                }
+            },
+            //调用执行后调用的函数
+            complete: function(XMLHttpRequest, textStatus){
+            },
+            //调用出错执行的函数
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+            }
+        });
+    }
+    //多文件上传
+    function go_multi_add(){
+        //把表单中选中的文件添加到postdata
+        var postdata=new FormData();
+        if ($("#files")[0]==null || $("#files")[0].files.length<1){
+            alert("未选中图片")
+            return false
+        }
+        for (var i=0;i<$("#files")[0].files.length;i++){
+            postdata.append("files",$("#files")[0].files[i])
+        }
+
+        $.ajax({
+            type:"POST",
+            url:"/file/uploaded",
+            data:postdata,
+            //返回数据的格式
+            datatype: "json",//"xml", "html", "script", "json", "jsonp", "text".
+            processData: false,
+            contentType: false,
+            //成功返回之后调用的函数
+            success:function(data){
+                if (data.code == 0) {
+                    alert('上传成功:'+data.msg);
+                    //window.location.href="/image/imagelist";
+                } else {
+                    alert("上传失败:"+data.msg);
+                }
+            },
+            //调用执行后调用的函数
+            complete: function(XMLHttpRequest, textStatus){
+            },
+            //调用出错执行的函数
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+            }
+        });
+    }
+</script>
+
+
+</body>
+</html>

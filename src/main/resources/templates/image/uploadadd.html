@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+    <script type="text/javascript" language="JavaScript" src="/js/jquery-1.6.2.min.js"></script>
+</head>
+<body>
+<div style="width:100%;height:20px;background:#ffffff;font-size: 16px;" ></div>
+<div id="content" style="width:800px;">
+
+    <div style="width:800px;float:left;">
+       <!--====================main begin=====================-->
+
+        <div style="width:280px;float:left;background: #eeeeee;padding-left: 10px;padding-top: 10px;">
+            单文件上传<br/>
+            说明：不能多选<br/>
+            <form id="form_add" method="POST" action="" enctype="multipart/form-data">
+            <div id="filelist" style="width: 260px;">
+                <div style="width:260px;height:50px;background: #ffff00;padding:2px 5px;">
+                <input type="text" style="width:200px;" name="text1" placeholder="文件说明"/><br/>
+                <input id="file1" type="file" name="file1" />
+                </div>
+            </div>
+            </form>
+            <input type="button" name="gofile" value="追加文件" onclick="go_add()" /><br/><br/>
+            <input type="button" name="goupload" value="提交" onclick="go_commit()" />
+        </div>
+
+
+        <!--====================main   end=====================-->
+    </div>
+</div>
+
+
+<script>
+    var global_file_num = 1;
+
+    //提交动态生成元素的表单
+    function go_commit() {
+        var postdata = new FormData($("#form_add")[0]);
+        //附加上文件表单元素的数量
+        postdata.append("num",global_file_num);
+    $.ajax({
+        type:"POST",
+        url:"/file/uploadadded",
+        data:postdata,
+        //返回数据的格式
+        datatype: "json",//"xml", "html", "script", "json", "jsonp", "text".
+        processData: false,
+        contentType: false,
+        //成功返回之后调用的函数
+        success:function(data){
+            if (data.code == 0) {
+                alert("success:"+data.msg);
+            } else {
+                alert("failed:"+data.msg);
+            }
+        },
+        //调用执行后调用的函数
+        complete: function(XMLHttpRequest, textStatus){
+        },
+        //调用出错执行的函数
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+            alert(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+        }
+    });
+
+    }
+    //添加一个文件表单元素
+    function go_add() {
+        var divcss = {
+            "background-color": "#ff0000",
+            "width":"260px",
+            "height":"50px",
+            "padding":"2px 5px"
+        };
+
+        global_file_num++;
+        var parentdiv=$('<div></div>');        //创建一个div
+        parentdiv.attr('id','filediv'+global_file_num);
+        parentdiv.css(divcss);    //添加css样式
+        var divhtml = '<input type="text" style="width:200px;" name="text'+global_file_num+'" placeholder="文件说明"/><br/>' +
+            '<input id="file'+global_file_num+'" type="file" name="file'+global_file_num+'" />';
+        parentdiv.html(divhtml);
+        $("#filelist").append(parentdiv);
+    }
+
+</script>
+
+
+</body>
+</html>
